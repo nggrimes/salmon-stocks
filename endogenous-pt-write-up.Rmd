@@ -1,0 +1,50 @@
+---
+title: "Endogenous Conservation Portfolio Theory"
+author: "Nathaniel Grimes"
+date: "2023-05-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Premise
+
+One-to-one application of Modern Portfolio Theory (MPT) in the Oregon Coho Evolutionary Significant Unit (ESU) is confusing. What does it mean for a portfolio of streams to contribute to the mean return and variance of salmon in Oregon? The weighting term ($w$) typically signifies the proportion of a budget that goes towards an asset. A weight term in the portfolio of streams indicates how much a given stream contributes to the overall return of salmon. There is no reason to assume this is constant or maximized in the natural system. This seems to fluctuate greatly each year. Even if a manager were to "maximize" the weights, how would that manifest? 
+
+Another step seems to be missing in this setting. Instead of manager doing something to the streams, let's reframe it as a manager possesses a budget with a suite of conservation interventions to choose from. Each intervention does not directly add salmon to the system, but changes the distribution of a stream by how much they invest into stream restoration. 
+
+## Model
+
+A planner seeks to maximize utility based on the expected returns of salmon. Each stream makes a random contribution to total escapement under a normal distribution ($x_i\sim N(\mu_i,\sigma_i^2)$). The total escapement follows a multivariate normal distribution with n streams $X\sim N_n(\boldsymbol\mu,\boldsymbol\Sigma)$. For simplicity we will first examine only one intervention option for each stream so $n=21$. Adding conservation dollars changes the expected return by a constant scalar amount. For example, suppose spending \$100 dollars on stream increases the mean return by 50 fish.  There are no assumptions on the marginal contribution of conservation dollars yet, but for any given level of spending the expected return is set. This allows us to multiply the stream returns by a constant scalar as a function of conservation dollars ($\gamma(w)$) to create a linear combination of impact on mean return ($\boldsymbol\gamma(\boldsymbol w)^T\boldsymbol X=\gamma_1(w_1)X_1+...+\gamma_n(w_n)X_n$. The multivariate normal distribution then becomes $\boldsymbol\gamma(\boldsymbol w)^TX\sim N_n(\boldsymbol\gamma(\boldsymbol w)^T\boldsymbol\mu,\boldsymbol\gamma(\boldsymbol w)^T\boldsymbol\Sigma\boldsymbol\gamma(\boldsymbol w))$.  
+
+Let's assume the planner has some degree of risk aversion so that they account for the risk and variance of the system. In general we would need a concave utility function, but I will specifically use Exponential utility as it simplifies the problem quite nicely with constant absolute risk aversion.
+
+\begin{equation}
+\begin{aligned}
+\max_w\mathbb{E}[U(\boldsymbol\gamma(\boldsymbol w)^TX)] \\
+\text{Subject to} \\
+\sum^n_{i=1}w_i=C
+\end{aligned}
+\end{equation}
+
+Total spending is limited by the budget constraint. Adding in exponential utility the problem becomes:
+
+\begin{equation}
+\begin{aligned}
+\max_w\mathbb{E}[1-\exp^{-a\boldsymbol\gamma(\boldsymbol w)^TX)}] \\
+\text{Subject to} \\
+\sum^n_{i=1}w_i=C
+\end{aligned}
+\end{equation}
+
+The beauty of exponential utility allows us to more easily pass through the expectations.
+
+\begin{equation}
+\begin{aligned}
+&\max_w[1-\mathbb{E}[\exp^{-a\boldsymbol\gamma(\boldsymbol w)^TX)}] &\text{By linearity of expectations} \\
+\text{Subject to} \\
+\sum^n_{i=1}w_i=C
+\end{aligned}
+\end{equation}
